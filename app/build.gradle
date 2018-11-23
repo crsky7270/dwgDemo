@@ -1,0 +1,55 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.booway.dwgdemo"
+        minSdkVersion 14
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                cppFlags "-fexceptions"
+            }
+        }
+        ndk {
+            moduleName 'natvie-lib'
+            abiFilters 'armeabi-v7a'
+        }
+    }
+
+
+    sourceSets {
+        main {
+            jni.srcDirs = ['src/main/jni',
+                           'src/main/jni/libdxfrw',
+                           'src/main/jni/libdxfrw/intern',
+                           'src/main/jni/filters',
+                           'src/main/jni/engine', 'src/main/jni/qtcore', 'src/main/jni/debug', 'src/main/jni/math', 'src/main/jni/boost', 'src/main/jni/boost/numeric/ublas', 'src/main/jni/boost/ublas/detail', 'src/main/jni/boost/serialization', 'src/main/jni/boost/math', 'src/main/jni/muparser']
+            jniLibs.srcDirs = ['src/main/jniLibs']
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.0.0-beta1'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:0.5'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
+}
