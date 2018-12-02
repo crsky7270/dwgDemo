@@ -48,12 +48,6 @@ public class BoowayDwgView extends GLSurfaceView {
 //        setRenderMode(RENDERMODE_CONTINUOUSLY);
     }
 
-    public BoowayDwgView(Context context, boolean translucent, int depth, int stencil) {
-        super(context);
-        init(translucent, depth, stencil);
-        dwgViewCtx = context;
-    }
-
     private void init(boolean translucent, int depth, int stencil) {
         if (translucent)
             this.getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -202,8 +196,6 @@ public class BoowayDwgView extends GLSurfaceView {
         private Context dwgViewCtx;
         //        private Line line;
         public float scale = 1.0f;
-        public float offsetX = 0f;
-        public float offsetY = 0f;
         private String fontPath;
 
         @Override
@@ -306,7 +298,6 @@ public class BoowayDwgView extends GLSurfaceView {
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (mTouchMode == DRAG) {
-//                    Log.w(TAG, "ex:" + event.getX() + ";ey:" + event.getY());
                     float dx = event.getX() - mTouchStart.x;
                     float dy = event.getY() - mTouchStart.y;
                     //TeighaDWGJni.viewTranslate(dx, dy);

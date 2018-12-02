@@ -211,31 +211,7 @@ Java_com_booway_dwgdemo_BoowayDwgJni_createRenderer(JNIEnv *env, jclass type, ji
 
 //****************************画线过程结束****************************
 
-//****************************开始圆过程****************************
 
-    for (std::vector<std::pair<RS_Vector, double >>::const_iterator ic = circleVectors.cbegin();
-         ic != circleVectors.cend(); ic++) {
-        int maxCirclePoint = 50;
-        GLfloat *circleArrBegin = new GLfloat[(maxCirclePoint + 1) * 3];
-        float centerX = ic->first.x / unit;
-        float centerY = ic->first.y / unit;
-        float r = ic->second / unit;
-
-        for (int y = 0; y < maxCirclePoint + 1; y++) {
-            float angleInRadians = ((float) y / (float) maxCirclePoint) * ((float) M_PI * 2.0f);
-            if (y != 0) {
-                *(circleArrBegin + 0 + (y - 1) * 3) = centerX + r * cos(angleInRadians);
-                *(circleArrBegin + 1 + (y - 1) * 3) = centerY + r * sin(angleInRadians);
-                *(circleArrBegin + 2 + (y - 1) * 3) = 0.0f;
-            }
-        }
-        glUniformMatrix4fv(mUMVPMatrixHandle, 1, GL_FALSE, mvp);
-        glVertexAttribPointer(maPositionHandle, 3, GL_FLOAT, GL_FALSE, 0, circleArrBegin);
-        glEnableVertexAttribArray(maPositionHandle);
-        glDrawArrays(GL_LINE_LOOP, 0, maxCirclePoint);
-    }
-
-//****************************结束圆过程****************************
 
 //****************************开始曲线过程****************************
 

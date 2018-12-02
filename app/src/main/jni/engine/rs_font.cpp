@@ -5,8 +5,6 @@
 #include "rs_font.h"
 
 void RS_Font::initFreeType() {
-    error = FT_Init_FreeType(&library);
-
     error = FT_Init_FreeType(&library);              /* initialize library */
 
     error = FT_New_Face(library, fontfile, 0, &face);/* create face object */
