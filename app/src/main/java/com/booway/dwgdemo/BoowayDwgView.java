@@ -3,19 +3,11 @@ package com.booway.dwgdemo;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.PointF;
-import android.opengl.GLES10;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import android.opengl.GLU;
-import android.opengl.GLUtils;
 import android.os.Environment;
-import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
-
-import com.booway.testSharpes.Line;
-import com.booway.utils.VaryTools;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -36,6 +28,8 @@ public class BoowayDwgView extends GLSurfaceView {
     private static int GLESVER = 2;
     public Renderer mRenderer;
     private Context dwgViewCtx;
+    public static int screenWidth = 0;
+    public static int screenHeight = 0;
 
     public void onLoad() {
         mRenderer.onLoad(dwgViewCtx);
@@ -208,6 +202,8 @@ public class BoowayDwgView extends GLSurfaceView {
         public void onSurfaceChanged(GL10 gl, int width, int height) {
             mWidth = width;
             mHeight = height;
+            BoowayDwgView.screenWidth = width;
+            BoowayDwgView.screenHeight = height;
         }
 
         @Override
@@ -247,7 +243,7 @@ public class BoowayDwgView extends GLSurfaceView {
     private static final int NONE = 0;
     private static final int DRAG = 1;
     private static final int ZOOM = 2;
-    private static final int ORBIT = 3;
+    private static final int RESET = 3;
     private int mTouchMode = NONE;
     // remember some things for zooming
     private PointF mTouchStart = new PointF();
@@ -268,7 +264,7 @@ public class BoowayDwgView extends GLSurfaceView {
                 mTouchStart.set(event.getX(), event.getY());
                 if (thisTime - mTouchLastTime < 250 && mTouchMode == NONE) {
                     // Double click
-                    mTouchMode = ORBIT;
+                    mTouchMode = RESET;
                     mTouchLastTime = -1;
                 } else {
                     mTouchMode = DRAG;
@@ -309,17 +305,19 @@ public class BoowayDwgView extends GLSurfaceView {
                     mTouchStart.x += dx;
                     mTouchStart.y += dy;
 //                    Log.w(TAG, "dx:" + dx + ";dy:" + dy);
-                } else if (mTouchMode == ORBIT) {
-                    float dx = event.getX() - mTouchStart.x;
-                    float dy = event.getY() - mTouchStart.y;
-
-                    final DisplayMetrics displayMetrics = new DisplayMetrics();
-                    ((MainActivity) this.getContext()).getWindowManager()
-                            .getDefaultDisplay().getMetrics(displayMetrics);
-                    float density = displayMetrics.density;
-                    //TeighaDWGJni.viewOrbit((float)Math.toRadians(dx / density / 2), (float)Math.toRadians(dy / density / 2));
-                    mTouchStart.x += dx;
-                    mTouchStart.y += dy;
+                } else if (mTouchMode == RESET) {
+                    BoowayDwgJni.createRenderer(screenWidth, screenHeight);
+                    requestRender();
+//                    float dx = event.getX() - mTouchStart.x;
+//                    float dy = event.getY() - mTouchStart.y;
+//
+//                    final DisplayMetrics displayMetrics = new DisplayMetrics();
+//                    ((MainActivity) this.getContext()).getWindowManager()
+//                            .getDefaultDisplay().getMetrics(displayMetrics);
+//                    float density = displayMetrics.density;
+//                    //TeighaDWGJni.viewOrbit((float)Math.toRadians(dx / density / 2), (float)Math.toRadians(dy / density / 2));
+//                    mTouchStart.x += dx;
+//                    mTouchStart.y += dy;
                 } else if (mTouchMode == ZOOM) {
                     float newDist = spacing(event);
                     if (newDist > 10f) {

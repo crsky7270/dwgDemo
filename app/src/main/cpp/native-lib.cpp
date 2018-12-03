@@ -46,6 +46,7 @@ glm::mat4 view;
 GLfloat offsetX = 0.0f;
 GLfloat offsetY = 0.0f;
 GLfloat scale = 1.0f;
+GLfloat scaleRecord = 0.0f;
 GLfloat *lineArrBegin;
 
 const char *fontfile;
@@ -180,15 +181,6 @@ Java_com_booway_dwgdemo_BoowayDwgJni_createRenderer(JNIEnv *env, jclass type, ji
     int i = 0;
 
     glUseProgram(d_glprogram);
-//****************************开始测试简单元素绘制*************************
-
-//    glUniformMatrix4fv(mUMVPMatrixHandle, 1, GL_FALSE, mvp);
-//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, mVertexArray);
-//    glEnableVertexAttribArray(maPositionHandle);
-//    glDrawArrays(GL_TRIANGLE_FAN, 0, 3);
-
-//****************************结束测试简单元素绘制*************************
-
 //****************************开始画线过程****************************
 
     lineArrBegin = new float[lineVectors.size() * 6];
@@ -277,31 +269,7 @@ Java_com_booway_dwgdemo_BoowayDwgJni_createRenderer(JNIEnv *env, jclass type, ji
 
 //****************************结束曲线过程****************************
 
-//    i = 0;
 //****************************开始椭圆过程****************************
-
-    /*椭圆测试代码，备份以供参考
-    while ((angleLength) <= staangle * 3 / 4) {
-        ellipsePointVector.emplace_back(centerX + abs(offsetCenterX) * cos(angleLength));
-        ellipsePointVector.emplace_back(
-                centerY + ratio * abs(offsetCenterX) * sin(angleLength));
-        ellipsePointVector.emplace_back(0.0f);
-        angleLength += angleUnit;
-    }
-
-    if (ellipsePointVector.size() > 0) {
-        float *ellipseArrBegin = new float[ellipsePointVector.size()];
-        for (auto const &a:ellipsePointVector) {
-            *(ellipseArrBegin + i) = a;
-            i++;
-        }
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, ellipseArrBegin);
-        glEnableVertexAttribArray(0);
-        glDrawArrays(GL_LINE_STRIP, 0, i / 3 -1);
-        delete[]ellipseArrBegin;
-    }
-    glDrawArrays(GL_LINE_STRIP, 0, 0);
-    */
 
     int maxEllipasePoint = 50;
     for (std::vector<std::pair<RS_Vector, RS_Vector>>::const_iterator ie = ellipseVectors.cbegin();
@@ -402,46 +370,15 @@ Java_com_booway_dwgdemo_BoowayDwgJni_createRenderer(JNIEnv *env, jclass type, ji
 
 //****************************开始画字过程****************************
 
-//    RS_Font font(fontfile);// = new RS_Font(&fontfile);
-//    font.initVectexList(mTextVectors);
-//    font.setMatrix(mUMVPMatrixHandle, maPositionHandle, mvp);
-//    font.draw();
-
     font->initFreeType();
     font->setMatrix(mUMVPMatrixHandle, maPositionHandle, mvp);
     font->draw();
 
-
 //****************************结束画字过程****************************
-
 
     return JNI_TRUE;
 
 }
-
-//****************************测试代码开始****************************
-//    for (auto &v:vectors) {
-//        vertexs[i] = v.first.x;
-//        vertexs[i + 1] = v.first.y;
-//        vertexs[i + 2] = 0.0f;
-//        i = i + 3;
-//
-//    }
-//    int count = vectors.size() * 3;
-////    GLfloat vertexs2 []= new GLfloat[100];
-//
-//    i = 0;
-//    const int num = vectors.size();
-//    GLfloat vertexs1[10000];
-//    for (std::vector<std::pair<RS_Vector, double> >::const_iterator iter = vectors.cbegin();
-//         iter != vectors.cend(); iter++) {
-//        vertexs1[i] = (float) (iter->first.x / 1000);
-//        vertexs1[i + 1] = (float) (iter->first.y /
-//                                   1000);//1.0f - 2.0f * (iter->first.y / screenHeight);
-//        vertexs1[i + 2] = 0.0f;
-//        i = i + 3;
-//    }
-//****************************测试代码结束****************************
 
 JNIEXPORT jboolean JNICALL
 Java_com_booway_dwgdemo_BoowayDwgJni_renderFrame(JNIEnv *env, jclass type) {
@@ -462,16 +399,6 @@ Java_com_booway_dwgdemo_BoowayDwgJni_renderFrame(JNIEnv *env, jclass type) {
     std::vector<int> lwlineVertexNum = context->lwLineVertexNum;
     std::vector<std::pair<RS_Vector, std::string>> mTextVectors = context->mTextList;
 
-//    projection = glm::ortho(-1.0f, 1.0f, -(float) screenHeight / screenWidth,
-//                            (float) screenHeight / screenWidth, 5.0f,
-//                            7.0f);
-//
-//    view = glm::lookAt(glm::vec3(0.0f, 0.0f, 6.0f),
-//                       glm::vec3(0.0f, 0.1f, 0.0f),
-//                       glm::vec3(0.0f, 1.0f, 0.0f));
-
-//    glViewport(0, 0, screenWidth, screenHeight);
-
     /*将模型矩阵转换为投影矩阵，保持正交投影*/
 //    glm::mat4 mvpMatrix = projection * view/* * module*/;
     glm::mat4 trans;
@@ -483,16 +410,6 @@ Java_com_booway_dwgdemo_BoowayDwgJni_renderFrame(JNIEnv *env, jclass type) {
     float *mvp = glm::value_ptr(mvpMatrix);
     int i = 0;
     glUseProgram(d_glprogram);
-
-//****************************开始测试简单元素绘制*************************
-
-//    glUniformMatrix4fv(mUMVPMatrixHandle, 1, GL_FALSE, mvp);
-//    glVertexAttribPointer(maPositionHandle, 3, GL_FLOAT, GL_FALSE, 0, mVertexArray);
-//    glEnableVertexAttribArray(maPositionHandle);
-//    glDrawArrays(GL_TRIANGLE_FAN, 0, 3);
-
-//****************************结束测试简单元素绘制*************************
-
 
 //****************************开始画线过程****************************
 
@@ -609,30 +526,6 @@ Java_com_booway_dwgdemo_BoowayDwgJni_renderFrame(JNIEnv *env, jclass type) {
 
 //    i = 0;
 //****************************开始椭圆过程****************************
-
-
-    /*椭圆测试代码，备份以供参考
-    while ((angleLength) <= staangle * 3 / 4) {
-        ellipsePointVector.emplace_back(centerX + abs(offsetCenterX) * cos(angleLength));
-        ellipsePointVector.emplace_back(
-                centerY + ratio * abs(offsetCenterX) * sin(angleLength));
-        ellipsePointVector.emplace_back(0.0f);
-        angleLength += angleUnit;
-    }
-
-    if (ellipsePointVector.size() > 0) {
-        float *ellipseArrBegin = new float[ellipsePointVector.size()];
-        for (auto const &a:ellipsePointVector) {
-            *(ellipseArrBegin + i) = a;
-            i++;
-        }
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, ellipseArrBegin);
-        glEnableVertexAttribArray(0);
-        glDrawArrays(GL_LINE_STRIP, 0, i / 3 -1);
-        delete[]ellipseArrBegin;
-    }
-    glDrawArrays(GL_LINE_STRIP, 0, 0);
-    */
 
     int maxEllipasePoint = 50;
     for (std::vector<std::pair<RS_Vector, RS_Vector>>::const_iterator ie = ellipseVectors.cbegin();
@@ -762,8 +655,7 @@ Java_com_booway_dwgdemo_BoowayDwgJni_destroyRenderer(JNIEnv *env, jclass type) {
     delete fontfile;
     unit = 100;
     fontfile = NULL;
-//    delete lineArrBegin;
-//    lineArrBegin = NULL;
+
     delete font;
     font = NULL;
     scale = 1.0f;
@@ -791,27 +683,6 @@ Java_com_booway_dwgdemo_BoowayDwgJni_init(JNIEnv *env, jclass type, jstring font
     GLuint fragmentShader;
 
     fontfile = env->GetStringUTFChars(fontFileName, 0);
-
-/*shader code
-    const char *shader_vertex =
-            "uniform mediump mat4 MODELVIEWPROJECTIONMATRIX;\n"
-                    "attribute vec4 POSITION;\n"
-                    "void main(){\n"
-                    "  gl_Position = POSITION;\n"
-                    "}";
-     This matrix member variable provides a hook to manipulate
-     the coordinates of the objects that use this vertex shader
-            "uniform mat4 uMVPMatrix;   \n"
-            "attribute vec4 vPosition;  \n"
-            "void main(){               \n"
-            " gl_Position = uMVPMatrix * vPosition; \n"
-            "}  \n";
-    const char *shader_vertex = "uniform mat4 uMVPMatrix;   \n"
-            "attribute vec4 vPosition;  \n"
-            "void main(){               \n"
-            " gl_Position = uMVPMatrix * vPosition; \n"
-            "}  \n";
-*/
     const char *shader_vertex = "attribute vec4 aPosition;\n"
             "attribute vec4 aColor;\n"
             "varying vec4 vColor;\n"
@@ -872,10 +743,9 @@ JNIEXPORT jboolean JNICALL
 Java_com_booway_dwgdemo_BoowayDwgJni_viewTranslate(JNIEnv *env, jclass type,
                                                    jfloat xAxis,
                                                    jfloat yAxis) {
-//    if (xAxis == 0 && yAxis == 0)
-//        return false;
     offsetX = xAxis / screenWidth * 2;
     offsetY = -yAxis / screenHeight * 2;
+    scale = 1.0f;
 
     return JNI_TRUE;
 
@@ -885,5 +755,6 @@ Java_com_booway_dwgdemo_BoowayDwgJni_viewScale(JNIEnv *env, jclass type, jfloat 
 
     // TODO
     scale = sCoef;
+    scaleRecord += (sCoef - 1.0);
     return JNI_TRUE;
 }
