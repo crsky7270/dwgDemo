@@ -21,19 +21,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".MainActivity">
+
+        </activity>
+        <activity android:name=".TestActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TestActivity">
-
-        </activity>
-
     </application>
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
-
 </manifest>

@@ -24,7 +24,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mView = new BoowayDwgView(getApplication());
         setContentView(mView);
-        filePath = Environment.getExternalStorageDirectory() + "/Download/1.dwg";
+
+        filePath = getIntent().getStringExtra("fileName");//Environment.getExternalStorageDirectory() + "/Download/1.dwg";
 
         new Thread(new Runnable() {
             @Override
@@ -57,9 +58,10 @@ public class MainActivity extends AppCompatActivity {
         if (isFinishing()) {
             mPdHandler.removeCallbacksAndMessages(null);
             mView.onDestroy();
-            BoowayDwgJni.close();
+            BoowayDwgJni.destroyRenderer();
             BoowayDwgJni.finit();
         }
+        MainActivity.this.finish();
     }
 
 //    private String getPath() {

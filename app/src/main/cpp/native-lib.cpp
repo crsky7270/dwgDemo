@@ -746,7 +746,7 @@ JNIEXPORT jboolean JNICALL
 Java_com_booway_dwgdemo_BoowayDwgJni_close(JNIEnv *env, jclass type) {
 
     // TODO
-
+    return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL
@@ -760,9 +760,10 @@ Java_com_booway_dwgdemo_BoowayDwgJni_destroyRenderer(JNIEnv *env, jclass type) {
         context = NULL;
     }
     delete fontfile;
+    unit = 100;
     fontfile = NULL;
-    delete lineArrBegin;
-    lineArrBegin = NULL;
+//    delete lineArrBegin;
+//    lineArrBegin = NULL;
     delete font;
     font = NULL;
     scale = 1.0f;
